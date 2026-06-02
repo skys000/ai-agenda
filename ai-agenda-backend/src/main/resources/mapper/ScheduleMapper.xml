@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.agenda.mapper.ScheduleMapper">
+
+    <select id="selectVoPage" resultType="com.example.agenda.pojo.vo.ScheduleVO">
+        SELECT
+        s.id,
+        s.title,
+        s.description,
+        s.start_time,
+        s.end_time,
+        s.priority,
+        s.status,
+        s.category_id,
+        c.name AS categoryName,
+        c.color AS categoryColor
+        FROM
+        t_schedule s
+        LEFT JOIN
+        t_category c ON s.category_id = c.id
+        <where>
+            s.is_deleted = 0
+            AND s.user_id = #{query.userId}
+            <if test="query.title != null and query.title != ''">
+                AND s.title LIKE CONCAT('%', #{query.title}, '%')
+            </if>
+            <if test="query.categoryId != null">
+                AND s.category_id = #{query.categoryId}
+            </if>
+        </where>
+        <!-- 你可以加上默认排序 -->
+        ORDER BY s.start_time DESC
+    </select>
+
+</mapper>
