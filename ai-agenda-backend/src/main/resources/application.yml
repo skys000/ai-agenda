@@ -12,7 +12,7 @@ spring:
     redis:
       host: localhost
       port: 6379
-      database: 0 # 沿用你的习惯，使用 1 号库
+      database: 0
       # password: # 如果有密码记得加上
 
   # ================= 数据库配置 =================
@@ -34,7 +34,6 @@ spring:
       base-url: https://api.siliconflow.cn/
       chat:
         options:
-          # 2026年最新模型 DeepSeek-V3.2
           model: deepseek-ai/DeepSeek-V3.2
           temperature: 0.8 # 0.8 比较有灵性，适合日程助手
           enable_thinking: false

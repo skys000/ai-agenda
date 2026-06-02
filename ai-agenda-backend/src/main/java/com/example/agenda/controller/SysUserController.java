@@ -76,9 +76,10 @@ public class SysUserController {
     @Operation(summary = "新增用户")
     @PostMapping("/add")
     public Result<String> add(@RequestBody SysUser sysUser) {
-        if (StringUtils.hasText(sysUser.getPassword())) {
-            sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
+        if (!StringUtils.hasText(sysUser.getPassword())) {
+            return Result.error("密码不能为空");
         }
+        sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
         sysUserService.save(sysUser);
         return Result.success("新增成功");
     }
@@ -88,6 +89,8 @@ public class SysUserController {
     public Result<String> update(@RequestBody SysUser sysUser) {
         if (StringUtils.hasText(sysUser.getPassword())) {
             sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
+        } else {
+            sysUser.setPassword(null);
         }
         sysUserService.updateById(sysUser);
         return Result.success("修改成功");

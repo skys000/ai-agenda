@@ -54,13 +54,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new RuntimeException("用户名或密码错误");
         }
 
-        // 3. 校验密码
-        if (!passwordEncoder.matches(password, user.getPassword())) {
+        // 3. 校验密码；兼容实训阶段已存在的明文密码数据
+        if (!matchesPassword(password, user.getPassword())) {
             throw new RuntimeException("用户名或密码错误");
         }
 
         // 4. 认证成功, 返回用户信息
         return user;
+    }
+
+    private boolean matchesPassword(String rawPassword, String storedPassword) {
+        if (rawPassword == null || storedPassword == null) {
+            return false;
+        }
+        if (storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$") || storedPassword.startsWith("$2y$")) {
+            return passwordEncoder.matches(rawPassword, storedPassword);
+        }
+        return rawPassword.equals(storedPassword);
     }
     //========================================
 }

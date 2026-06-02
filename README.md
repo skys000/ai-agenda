@@ -64,9 +64,13 @@ $env:JWT_SECRET="replace_with_a_long_random_secret"
 
 3. 启动后端：
 
+方式一：使用 IntelliJ IDEA 打开 `ai-agenda-backend`，运行 `AiAgendaApplication`。
+
+方式二：使用本机 Maven：
+
 ```powershell
 cd ai-agenda-backend
-.\mvnw.cmd spring-boot:run
+mvn spring-boot:run
 ```
 
 默认服务端口为 `6887`。
