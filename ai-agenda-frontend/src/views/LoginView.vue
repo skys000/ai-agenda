@@ -1,11 +1,20 @@
 <template>
   <div class="login-container">
-    <el-card class="login-card">
-      <template #header>
-        <div class="card-header">
-          <span>智能日程管家 - 登录</span>
-        </div>
-      </template>
+    <section class="brand-panel">
+      <div class="brand-mark">
+        <el-icon><Calendar /></el-icon>
+      </div>
+      <h1>智能日程管家</h1>
+      <p>面向个人日程管理场景的 AI 对话助手，支持自然语言创建日程、多会话记录和后台管理。</p>
+      <div class="feature-list">
+        <span>Spring AI</span>
+        <span>Function Calling</span>
+        <span>Vue3</span>
+      </div>
+    </section>
+
+    <el-card class="login-card" shadow="always">
+      <h2>账号登录</h2>
       <el-form 
         ref="loginFormRef" 
         :model="loginForm" 
@@ -27,7 +36,7 @@
         </el-form-item>
         <el-form-item>
           <el-button 
-            style="width: 100%;"
+            class="login-button"
             type="primary" 
             @click="handleLogin" 
             :loading="loading"
@@ -50,67 +59,37 @@ const router = useRouter();
 const loginFormRef = ref(null);
 const loading = ref(false);
 
-// 登录表单数据
 const loginForm = reactive({
   username: '',
   password: '',
 });
 
-// 表单校验规则
 const loginRules = reactive({
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 });
 
-// 登录按钮点击事件
 const handleLogin = async () => {
   await loginFormRef.value.validate(async (valid) => {
     if (valid) {
       loading.value = true;
       try {
-        console.log("正在请求登录...");
         const res = await loginApi(loginForm);
-        console.log("登录接口返回:", res);
-
-        // 【核心修复点】
-        // 你的 request.js 返回的是 res (整个响应对象)
-        // 后端结构是: { code: 200, data: { token: "..." } }
-        // 所以 Token 在 res.data.token
-        
         if (res.data && res.data.token) {
-          // 1. 存入 Token
           localStorage.setItem('token', res.data.token);
-          
-          // 2. 存入用户名
           localStorage.setItem('username', loginForm.username);
-          console.log("Token 和用户名已写入 LocalStorage:", {
-            token: localStorage.getItem('token'),
-            username: localStorage.getItem('username')
-          });
-          
-          // 3. 提示成功
           ElMessage.success('登录成功！');
-          
-          // 4. 跳转 (使用 replace 防止回退到登录页)
           router.replace('/agenda/schedule');
         } else {
-          console.error("登录成功但没有获取到Token!", res);
           ElMessage.error("系统异常：未获取到令牌");
         }
-        
       } catch (error) {
-        console.error('登录流程出错:', error);
-        
-        // 根据错误类型显示不同的提示信息
         if (error.response) {
-          // 后端返回的错误
           const errorMsg = error.response.data?.msg || error.response.data?.message || '登录失败，请检查用户名和密码';
           ElMessage.error(errorMsg);
         } else if (error.request) {
-          // 网络错误
           ElMessage.error('网络连接失败，请检查网络连接');
         } else {
-          // 其他错误
           ElMessage.error('登录失败，请重试');
         }
       } finally {
@@ -126,20 +105,68 @@ const handleLogin = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 72px;
   height: 100vh;
-  background-color: #f0f2f5;
-  /* background-image: url('@/assets/login-bg.svg'); /* 你可以准备一张背景图 */
-  background-size: cover;
+  padding: 48px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(22, 119, 255, 0.18), transparent 32%),
+    linear-gradient(135deg, #eef4ff 0%, #f7f9fc 52%, #eefaf4 100%);
+}
+.brand-panel {
+  width: 460px;
+  color: #172033;
+}
+.brand-mark {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  border-radius: 18px;
+  color: #fff;
+  font-size: 30px;
+  background: #1677ff;
+  box-shadow: 0 18px 40px rgba(22, 119, 255, 0.28);
+}
+.brand-panel h1 {
+  margin: 0 0 16px;
+  font-size: 44px;
+  line-height: 1.18;
+}
+.brand-panel p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #4b5563;
+}
+.feature-list {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+}
+.feature-list span {
+  padding: 8px 12px;
+  border: 1px solid rgba(22, 119, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #1f4f8f;
+  font-size: 13px;
 }
 .login-card {
-  width: 450px;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  width: 420px;
+  padding: 28px 24px 18px;
+  border-radius: 12px;
 }
-.card-header {
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+.login-card h2 {
+  margin: 0 0 28px;
+  text-align: left;
+  font-size: 24px;
+  color: #111827;
+}
+.login-button {
+  width: 100%;
+  height: 42px;
+  font-weight: 600;
 }
 </style>

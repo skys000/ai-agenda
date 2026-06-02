@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @TableName("sys_user_role")
-@AllArgsConstructor // for new SysUserRole(userId, roleId)
-@NoArgsConstructor  // for MyBatis-Plus
+@AllArgsConstructor
+@NoArgsConstructor
 public class SysUserRole {
-    // 假设你的关联表没有自增 id，只有 userId 和 roleId
     private Long userId;
     private Long roleId;
 }

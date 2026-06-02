@@ -118,7 +118,6 @@ const getMenuTree = async () => {
   listLoading.value = true
   try {
     const res = await apiGetMenuTree()
-    console.log('菜单树数据响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       // 兼容多种数据格式
@@ -131,14 +130,12 @@ const getMenuTree = async () => {
         rawData = res.data ? [res.data] : []
       }
       
-      console.log('解析后的菜单树数据:', rawData) // 调试日志
       
       // 强制重新赋值，确保Vue响应式更新
       menuTreeData.value = []
       // 使用nextTick确保DOM更新
       setTimeout(() => {
         menuTreeData.value = rawData
-        console.log('菜单树数据已更新，长度:', menuTreeData.value.length)
       }, 0)
       
       // 【广播】菜单已更新
@@ -204,7 +201,6 @@ const createData = async () => {
     await getMenuTree()
     // 延迟触发事件，确保数据已完全更新
     setTimeout(() => {
-      console.log('菜单管理界面触发菜单更新事件')
       bus.emit('menu-updated')
     }, 100)
   } catch (error) {

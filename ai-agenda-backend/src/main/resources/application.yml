@@ -1,64 +1,46 @@
 server:
   port: 6887
   servlet:
-    context-path: / # 项目访问路径，默认是 /
+    context-path: /
 
 spring:
   application:
     name: ai-agenda-backend
 
-  # ================= Redis 配置 =================
   data:
     redis:
       host: localhost
       port: 6379
       database: 0
-      # password: # 如果有密码记得加上
 
-  # ================= 数据库配置 =================
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    # 【修改点 1】数据库名改为 ai_agenda_db (第一步建表时的名字)
-    # 加上 serverTimezone 防止时间差 8 小时的问题
     url: jdbc:mysql://localhost:3306/ai_agenda_db?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWORD:}
 
-  # ================= AI (DeepSeek) 配置 =================
   ai:
     openai:
-      # 请通过环境变量配置硅基流动 API Key
       api-key: ${SILICONFLOW_API_KEY:}
-      # 【说明】Spring AI 对接第三方 OpenAI 兼容接口时，通常建议加上 /v1
-      # 如果你实训时不加 /v1 也能跑，可以去掉。但加上更符合标准协议。
       base-url: https://api.siliconflow.cn/
       chat:
         options:
           model: deepseek-ai/DeepSeek-V3.2
-          temperature: 0.8 # 0.8 比较有灵性，适合日程助手
+          temperature: 0.8
           enable_thinking: false
 
 
-# ================= MyBatis Plus 配置 =================
 mybatis-plus:
-  # XML 文件的位置 (虽然我们暂时用注解，但保留这个配置方便后续扩展)
   mapper-locations: classpath:mapper/*.xml
-  # 【修改点 2】非常重要！这里必须改成新项目的包名
-  # 告诉 MyBatis 去哪里找实体类，不然报 Invalid bound statement
   type-aliases-package: com.example.agenda.pojo.entity
   configuration:
-    # 打印 SQL 日志到控制台
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    # 开启驼峰命名转换 (user_id -> userId)
     map-underscore-to-camel-case: true
 
-# ================= 日志配置 =================
 logging:
   level:
-    # 你的这个配置很棒，Debug 级别可以看到 AI Advisor (上下文记忆) 的处理过程
     org.springframework.ai.chat.client.advisor: debug
-    # 也可以加上 web 日志，方便看接口请求
     org.springframework.web: info
 jwt:
   secret: ${JWT_SECRET:ThisIsADevelopmentOnlyJwtSecretForAiAgendaAndShouldBeChangedBeforeProduction1234567890}
-  expiration: 86400 # token有效期，单位秒，这里是24小时
+  expiration: 86400

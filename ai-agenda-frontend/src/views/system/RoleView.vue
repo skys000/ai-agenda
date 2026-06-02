@@ -104,7 +104,6 @@ const getList = async () => {
   listLoading.value = true
   try {
     const res = await getRoleList()
-    console.log('角色列表响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       // 兼容多种数据格式
@@ -116,7 +115,6 @@ const getList = async () => {
         list.value = res.data ? [res.data] : []
       }
       
-      console.log('解析后的角色列表:', list.value) // 调试日志
     } else {
       console.error('获取角色列表失败:', res?.msg || '未知错误')
       ElMessage.error('获取角色列表失败')
@@ -132,7 +130,6 @@ const getList = async () => {
 const fetchMenuTree = async () => {
   try {
     const res = await getMenuTree()
-    console.log('菜单树响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       // 兼容多种数据格式
@@ -147,7 +144,6 @@ const fetchMenuTree = async () => {
       
       menuTreeData.value = rawData
       allMenuData.value = flattenTree(menuTreeData.value)
-      console.log('解析后的菜单树数据:', menuTreeData.value) // 调试日志
     } else {
       console.error('获取菜单树失败:', res?.msg || '未知错误')
       ElMessage.error('获取菜单树失败')
@@ -227,7 +223,6 @@ const handleAssign = async (row) => {
   currentRoleId.value = row.id
   try {
     const res = await getAssignedMenus(row.id)
-    console.log('已分配菜单响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       const assignedMenuIds = Array.isArray(res.data) ? res.data : [res.data]
@@ -238,7 +233,6 @@ const handleAssign = async (row) => {
       dialogAssignVisible.value = true
       nextTick(() => {
         menuTreeRef.value.setCheckedKeys(leafNodeIds, false)
-        console.log('设置选中菜单项:', leafNodeIds) // 调试日志
       })
     } else {
       console.error('获取权限数据失败:', res?.msg || '未知错误')
@@ -255,11 +249,6 @@ const assignPermissions = async () => {
   const halfCheckedKeys = menuTreeRef.value.getHalfCheckedKeys()
   const allCheckedIds = [...checkedKeys, ...halfCheckedKeys]
   
-  console.log('分配权限数据:', {
-    roleId: currentRoleId.value,
-    menuIds: allCheckedIds
-  }) // 调试日志
-
   try {
     await assignMenus({
       roleId: currentRoleId.value,

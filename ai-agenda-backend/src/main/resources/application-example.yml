@@ -1,0 +1,26 @@
+server:
+  port: 6887
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ai_agenda_db?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: your_mysql_password
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+  ai:
+    openai:
+      api-key: your_siliconflow_api_key
+      base-url: https://api.siliconflow.cn/
+      chat:
+        options:
+          model: deepseek-ai/DeepSeek-V3.2
+          temperature: 0.8
+          enable_thinking: false
+
+jwt:
+  secret: replace_with_a_long_random_secret
+  expiration: 86400

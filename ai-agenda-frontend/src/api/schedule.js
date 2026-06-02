@@ -1,7 +1,4 @@
-// src/api/schedule.js
-
-// 【关键错误点】千万不要写 import axios from 'axios'
-import request from '@/utils/request'; // <--- 必须引用我们封装好的 request
+import request from '@/utils/request';
 
 // 获取日程列表
 export const getScheduleList = (params) => {
@@ -15,7 +12,7 @@ export const getScheduleList = (params) => {
 // 获取分类列表
 export const getCategoryList = () => {
     return request({
-        url: '/category/list', // 假设你的后端接口是这个
+        url: '/category/list',
         method: 'get'
     });
 }

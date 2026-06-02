@@ -81,7 +81,6 @@ const getList = async () => {
   try {
     // 分类列表通常不分页，一次性加载
     const res = await getCategoryList()
-    console.log('分类列表响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       // 兼容多种数据格式
@@ -93,7 +92,6 @@ const getList = async () => {
         list.value = res.data ? [res.data] : []
       }
       
-      console.log('解析后的分类列表:', list.value) // 调试日志
     } else {
       console.error('获取分类列表失败:', res?.msg || '未知错误')
       ElMessage.error('获取分类列表失败')

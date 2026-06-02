@@ -3,14 +3,14 @@ package com.example.agenda.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.agenda.pojo.dto.AssignRoleDTO;
-import com.example.agenda.pojo.dto.LoginDTO; // 新增导入
+import com.example.agenda.pojo.dto.LoginDTO;
 import com.example.agenda.pojo.entity.SysUser;
 import com.example.agenda.pojo.entity.SysUserRole;
-import com.example.agenda.pojo.vo.LoginVO; // 新增导入
+import com.example.agenda.pojo.vo.LoginVO;
 import com.example.agenda.result.Result;
 import com.example.agenda.service.SysUserRoleService;
 import com.example.agenda.service.SysUserService;
-import com.example.agenda.util.JwtUtil; // 新增导入
+import com.example.agenda.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Tag(name = "系统用户管理")
 @RestController
 @RequestMapping("/sys-user")
-@CrossOrigin // 注意：Spring Security接管后，这个注解可能失效，建议使用Security的CORS配置
+@CrossOrigin
 public class SysUserController {
 
     @Autowired
@@ -33,27 +33,19 @@ public class SysUserController {
     @Autowired
     private SysUserRoleService sysUserRoleService;
 
-    // 新增注入 JwtUtil
     @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    //============== 新增登录接口 ==============
     @Operation(summary = "用户登录")
     @PostMapping("/login")
     public Result<LoginVO> login(@RequestBody LoginDTO loginDTO) {
-        // 1. 调用Service进行用户认证
         SysUser user = sysUserService.login(loginDTO.getUsername(), loginDTO.getPassword());
-
-        // 2. 认证成功，使用JwtUtil生成JWT
         String token = jwtUtil.generateToken(user);
-
-        // 3. 封装VO并返回
         return Result.success(new LoginVO(token));
     }
-    //========================================
 
     @Operation(summary = "分页查询用户列表")
     @GetMapping("/list")

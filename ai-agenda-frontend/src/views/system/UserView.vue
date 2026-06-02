@@ -148,7 +148,6 @@ const getList = async () => {
   listLoading.value = true
   try {
     const res = await getUserList(listQuery.value)
-    console.log('用户列表响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       // 兼容多种数据格式
@@ -163,7 +162,6 @@ const getList = async () => {
         total.value = list.value.length
       }
       
-      console.log('解析后的用户列表:', list.value) // 调试日志
     } else {
       console.error('获取用户列表失败:', res?.msg || '未知错误')
       ElMessage.error('获取用户列表失败')
@@ -179,7 +177,6 @@ const getList = async () => {
 const getAllRoles = async () => {
   try {
     const res = await getRoleList()
-    console.log('角色列表响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       // 兼容多种数据格式
@@ -191,7 +188,6 @@ const getAllRoles = async () => {
         allRoles.value = res.data ? [res.data] : []
       }
       
-      console.log('解析后的角色列表:', allRoles.value) // 调试日志
     } else {
       console.error('获取角色列表失败:', res?.msg || '未知错误')
       ElMessage.error('获取角色列表失败')
@@ -311,14 +307,12 @@ const handleAssignRole = async (row) => {
   try {
     // 1. 调用回显接口
     const res = await getAssignedRoles(row.id)
-    console.log('已分配角色响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       assignedRoleIds.value = Array.isArray(res.data) ? res.data : [res.data]
       
       // 2. 打开弹窗
       dialogAssignRoleVisible.value = true
-      console.log('设置已分配角色ID:', assignedRoleIds.value) // 调试日志
     } else {
       console.error('获取用户角色信息失败:', res?.msg || '未知错误')
       ElMessage.error('获取用户角色信息失败')
@@ -331,11 +325,6 @@ const handleAssignRole = async (row) => {
 
 const assignUserRoles = async () => {
   try {
-    console.log('分配角色数据:', {
-      userId: currentUserId.value,
-      roleIds: assignedRoleIds.value
-    }) // 调试日志
-    
     await assignRoles({
       userId: currentUserId.value,
       roleIds: assignedRoleIds.value

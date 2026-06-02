@@ -251,15 +251,11 @@ const calendarOptions = reactive({
     dialogFormVisible.value = true
   },
   
-  // 【修复】添加拖动事件处理
   eventDrop: async (info) => {
-    console.log('拖动事件:', info)
-    
     const eventObj = info.event
     const newStartTime = formatDate(eventObj.start)
     const newEndTime = eventObj.end ? formatDate(eventObj.end) : formatDate(eventObj.start)
     
-    // 更新日程数据
     const updatedSchedule = {
       id: parseInt(eventObj.id),
       title: eventObj.title,
@@ -274,24 +270,18 @@ const calendarOptions = reactive({
     try {
       await updateSchedule(updatedSchedule)
       ElMessage.success('日程时间已更新')
-      console.log('拖动更新成功:', updatedSchedule)
     } catch (error) {
       console.error('拖动更新失败:', error)
       ElMessage.error('更新失败，已恢复原位置')
-      // 拖动失败时恢复原位置
       info.revert()
     }
   },
   
-  // 【修复】添加调整大小事件处理
   eventResize: async (info) => {
-    console.log('调整大小事件:', info)
-    
     const eventObj = info.event
     const newStartTime = formatDate(eventObj.start)
     const newEndTime = eventObj.end ? formatDate(eventObj.end) : formatDate(eventObj.start)
     
-    // 更新日程数据
     const updatedSchedule = {
       id: parseInt(eventObj.id),
       title: eventObj.title,
@@ -306,38 +296,30 @@ const calendarOptions = reactive({
     try {
       await updateSchedule(updatedSchedule)
       ElMessage.success('日程时间已更新')
-      console.log('调整大小更新成功:', updatedSchedule)
     } catch (error) {
       console.error('调整大小更新失败:', error)
       ElMessage.error('更新失败，已恢复原大小')
-      // 调整失败时恢复原大小
       info.revert()
     }
   }
 })
 
-// --- 生命周期钩子 ---
-onMounted(() => {
-  // 使用 Promise.all 来并行加载初始数据，更高效且易于管理
-  Promise.all([
-    getList(),
-    fetchCategoryList(),
-    fetchCalendarEvents() // 日历数据也一并加载
-  ]).then(() => {
-    console.log('所有初始数据加载完毕！');
-  }).catch(error => {
-    ElMessage.error('页面初始化失败，请检查网络连接或后端服务');
-    console.error('初始化加载错误:', error);
-  });
+onMounted(async () => {
+  try {
+    await Promise.all([
+      getList(),
+      fetchCategoryList(),
+      fetchCalendarEvents()
+    ])
+  } catch (error) {
+    ElMessage.error('页面初始化失败，请检查网络连接或后端服务')
+    console.error('初始化加载错误:', error)
+  }
 })
 
-// --- 核心逻辑 ---
-
-// 1. 获取所有日程（用于日历显示，这里简单起见查前100条，实际应按时间范围查）
 const fetchCalendarEvents = async () => {
   try {
     const res = await getScheduleList({ pageSize: 100 })
-    console.log('日历数据响应:', res) // 调试日志
     
     let records = [];
     // 检查返回的数据结构，兼容多种格式
@@ -353,7 +335,6 @@ const fetchCalendarEvents = async () => {
       records = res;
     }
     
-    console.log('解析后的日历记录:', records) // 调试日志
     
     // 映射后端数据 -> FullCalendar 事件格式
     calendarOptions.events = records.map(item => ({
@@ -381,7 +362,6 @@ const getList = async () => {
   listLoading.value = true
   try {
     const res = await getScheduleList(listQuery.value)
-    console.log('列表数据响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       // 检查返回的数据结构，兼容不同格式
@@ -403,7 +383,6 @@ const getList = async () => {
         categoryColor: item.categoryColor || item.category_color
       }))
       
-      console.log('解析后的列表数据:', list.value) // 调试日志
     } else {
       ElMessage.error(res?.msg || '获取日程列表失败')
     }
@@ -419,11 +398,9 @@ const getList = async () => {
 const fetchCategoryList = async () => {
   try {
     const res = await getCategoryList()
-    console.log('分类数据响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       categoryList.value = Array.isArray(res.data) ? res.data : [res.data]
-      console.log('解析后的分类数据:', categoryList.value) // 调试日志
     } else {
       ElMessage.error(res?.msg || '获取分类列表失败')
     }

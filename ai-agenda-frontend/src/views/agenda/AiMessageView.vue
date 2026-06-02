@@ -73,7 +73,6 @@ const getList = async () => {
   listLoading.value = true
   try {
     const res = await getAiMessageList(listQuery.value)
-    console.log('AI会话消息响应:', res) // 调试日志
     
     if (res && res.code === 200) {
       // 兼容多种数据格式
@@ -88,7 +87,6 @@ const getList = async () => {
         total.value = list.value.length
       }
       
-      console.log('解析后的AI会话消息列表:', list.value) // 调试日志
     } else {
       console.error('获取AI会话消息失败:', res?.msg || '未知错误')
       ElMessage.error('获取AI会话消息失败')
